@@ -74,22 +74,20 @@ function App() {
 
     return (
         <div className="App">
-          <header className="App-header">
-            <form>
-              <label>
-                Ange projektnamn: <br />
-                <input type="text" name="projectName" value={projectName} onChange={handleChange} />
-              </label>
-            </form>
-            <div className="flex-parent">
-              <div className="flex-sub"><Button variant="outline-success" onClick={startWorking}>Starta</Button></div>
-              <div className="flex-sub"><Button variant="outline-danger" onClick={stoppedWorking}>Sluta</Button></div>
-              <div className="flex-sub"><Button variant="outline-warning" onClick={clear}>Rensa</Button></div>
-            </div>
-            <StartedMessage />
-            <StoppedMessage />
-            <TimeSpentMessage />
-          </header>
+          <form>
+            <label>
+              Ange projektnamn: <br />
+              <input type="text" name="projectName" value={projectName} onChange={handleChange} />
+            </label>
+          </form>
+          <div className="flex-parent">
+            <div className="flex-sub"><Button variant="outline-success" onClick={startWorking}>Starta</Button></div>
+            <div className="flex-sub"><Button variant="outline-danger" onClick={stoppedWorking}>Sluta</Button></div>
+            <div className="flex-sub"><Button variant="outline-warning" onClick={clear}>Rensa</Button></div>
+          </div>
+          <StartedMessage />
+          <StoppedMessage />
+          <TimeSpentMessage />
         </div>
     );
 }
