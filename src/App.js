@@ -65,6 +65,13 @@ function App() {
         }
     };
 
+    const clear = () => {
+        setStart('');
+        setStop('');
+        setTimeSpent(null);
+        setProjectName('');
+    };
+
     return (
         <div className="App">
           <header className="App-header">
@@ -76,7 +83,8 @@ function App() {
             </form>
             <div className="flex-parent">
               <div className="flex-sub"><Button variant="outline-success" onClick={startWorking}>Starta</Button></div>
-              <div className="flex-sub"><Button variant="outline-danger" onClick={stoppedWorking}>Sluta</Button> </div>
+              <div className="flex-sub"><Button variant="outline-danger" onClick={stoppedWorking}>Sluta</Button></div>
+              <div className="flex-sub"><Button variant="outline-warning" onClick={clear}>Rensa</Button></div>
             </div>
             <StartedMessage />
             <StoppedMessage />
