@@ -1,17 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Button from 'react-bootstrap/Button';
 import Alert from 'react-bootstrap/Alert';
 import moment from 'moment';
+import axios from 'axios';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-function App() {
+const App = () => {
     const [projectName, setProjectName] = useState('');
     const [start, setStart] = useState('');
     const [stop, setStop] = useState('');
     const [startWasPressed, setStartWasPressed] = useState(false);
     const [stopWasPressed, setStopWasPressed] = useState(false);
     const [timeSpent, setTimeSpent] = useState(null);
+    const [serverMessage, setServerMessage] = useState('');
+
+    useEffect(() => {
+        const getServerMessage = async () => {
+            const result = await axios.get(`http://localhost:3001/`);
+            setServerMessage(result.data);
+        };
+
+        getServerMessage();
+    }, []);
 
     const handleChange = event => {
         setProjectName(event.target.value);
@@ -72,8 +83,13 @@ function App() {
         setProjectName('');
     };
 
+    const ServerMessage = () => {
+        return <Alert key={456} variant={'info'}>Servern säger {serverMessage}</Alert>;
+    };
+
     return (
         <div className="App">
+          <ServerMessage/>
           <form>
             <label>
               Ange projektnamn: <br />
@@ -90,6 +106,6 @@ function App() {
           <TimeSpentMessage />
         </div>
     );
-}
+};
 
 export default App;
