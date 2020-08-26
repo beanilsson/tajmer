@@ -25,6 +25,9 @@ const App = () => {
     }, []);
 
     const handleChange = event => {
+        if (start && stop) {
+            clear();
+        }
         setProjectName(event.target.value);
     };
 
