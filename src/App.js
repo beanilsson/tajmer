@@ -17,8 +17,14 @@ const App = () => {
 
     useEffect(() => {
         const getServerMessage = async () => {
-            const result = await axios.get(`http://localhost:3001/`);
-            setServerMessage(result.data);
+            try {
+                const result = await axios.get(`http://localhost:3001/`);
+                console.log(result);
+                setServerMessage(result.data);
+            } catch (error){
+                console.error(error);
+                setServerMessage('nothing as it is not online');
+            }
         };
 
         getServerMessage();
@@ -29,6 +35,14 @@ const App = () => {
             clear();
         }
         setProjectName(event.target.value);
+    };
+
+    const handleSubmit = event => {
+        event.preventDefault();
+        if (start && stop) {
+            clear();
+        }
+        startWorking();
     };
 
     const startWorking = () => {
@@ -93,10 +107,10 @@ const App = () => {
     return (
         <div className="App">
           <ServerMessage/>
-          <form>
+          <form onSubmit={handleSubmit}>
             <label>
               Ange projektnamn: <br />
-              <input type="text" name="projectName" value={projectName} onChange={handleChange} />
+              <input type="text" name="projectName" value={projectName} onChange={handleChange}/>
             </label>
           </form>
           <div className="flex-parent">
