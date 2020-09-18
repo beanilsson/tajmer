@@ -14,6 +14,7 @@ const App = () => {
     const [stopWasPressed, setStopWasPressed] = useState(false);
     const [timeSpent, setTimeSpent] = useState(null);
     const [serverMessage, setServerMessage] = useState('');
+    const [projects, setProjects] = useState([]);
 
     useEffect(() => {
         const getServerMessage = async () => {
@@ -21,7 +22,7 @@ const App = () => {
                 const result = await axios.get(`http://localhost:3001/`);
                 console.log(result);
                 setServerMessage(result.data);
-            } catch (error){
+            } catch (error) {
                 console.error(error);
                 setServerMessage('nothing as it is not online');
             }
@@ -52,6 +53,17 @@ const App = () => {
             setStart(moment());
             setStop('');
             setTimeSpent(null);
+            const inList = projects.some(
+                project => projectName === project.name
+            );
+
+            if (!inList) {
+                const newProjects = [
+                    ...projects,
+                    { name: projectName, totalTime: 0 },
+                ];
+                setProjects(newProjects);
+            }
         }
     };
 
@@ -67,7 +79,11 @@ const App = () => {
 
     const StartedMessage = () => {
         if (start !== '') {
-            return <div>Arbetet med {projectName} började: {start.format("HH:mm")}</div>;
+            return (
+                <div>
+                    Arbetet med {projectName} började: {start.format('HH:mm')}
+                </div>
+            );
         } else {
             return <></>;
         }
@@ -75,7 +91,11 @@ const App = () => {
 
     const StoppedMessage = () => {
         if (stop !== '') {
-            return <div>Arbetet med {projectName} slutade: {stop.format("HH:mm")}</div>;
+            return (
+                <div>
+                    Arbetet med {projectName} slutade: {stop.format('HH:mm')}
+                </div>
+            );
         } else {
             return <></>;
         }
@@ -84,9 +104,17 @@ const App = () => {
     const TimeSpentMessage = () => {
         if (timeSpent !== null) {
             if (timeSpent >= 0 && timeSpent < 60) {
-                return <Alert key={123} variant={'dark'}>Tid spenderad på {projectName}: {timeSpent} minuter</Alert>;
+                return (
+                    <Alert key={123} variant={'dark'}>
+                        Tid spenderad på {projectName}: {timeSpent} minuter
+                    </Alert>
+                );
             } else if (timeSpent >= 60) {
-                return <Alert key={123} variant={'dark'}>Tid spenderad på {projectName}: {timeSpent / 60} timmar</Alert>;
+                return (
+                    <Alert key={123} variant={'dark'}>
+                        Tid spenderad på {projectName}: {timeSpent / 60} timmar
+                    </Alert>
+                );
             }
         } else {
             return <></>;
@@ -101,26 +129,94 @@ const App = () => {
     };
 
     const ServerMessage = () => {
-        return <Alert key={456} variant={'info'}>Servern säger {serverMessage}</Alert>;
+        return (
+            <Alert key={456} variant={'info'}>
+                Servern säger {serverMessage}
+            </Alert>
+        );
+    };
+
+    const ProjectsList = () => {
+        return (
+            <div>
+                <h2>Tidigare projekt:</h2>
+                <ul style={{ listStyleType: 'none', textAlign: 'right' }}>
+                    {projects.map(project => (
+                        <li
+                            key={'key-' + project.name}
+                            style={{
+                                marginBottom: '10px',
+                                borderBottom: '1px solid white',
+                                paddingBottom: '10px',
+                            }}
+                        >
+                            {project.name} <StartButton /> <StopButton />
+                        </li>
+                    ))}
+                </ul>
+            </div>
+        );
+    };
+
+    const StartButton = () => {
+        return (
+            <Button variant="outline-success" onClick={startWorking}>
+                Starta
+            </Button>
+        );
+    };
+
+    const StopButton = () => {
+        return (
+            <Button variant="outline-danger" onClick={stoppedWorking}>
+                Sluta
+            </Button>
+        );
+    };
+
+    const ClearButton = () => {
+        return (
+            <Button variant="outline-warning" onClick={clear}>
+                Rensa
+            </Button>
+        );
     };
 
     return (
         <div className="App">
-          <ServerMessage/>
-          <form onSubmit={handleSubmit}>
-            <label>
-              Ange projektnamn: <br />
-              <input type="text" name="projectName" value={projectName} onChange={handleChange}/>
-            </label>
-          </form>
-          <div className="flex-parent">
-            <div className="flex-sub"><Button variant="outline-success" onClick={startWorking}>Starta</Button></div>
-            <div className="flex-sub"><Button variant="outline-danger" onClick={stoppedWorking}>Sluta</Button></div>
-            <div className="flex-sub"><Button variant="outline-warning" onClick={clear}>Rensa</Button></div>
-          </div>
-          <StartedMessage />
-          <StoppedMessage />
-          <TimeSpentMessage />
+            <ServerMessage />
+            <div className="flex-parent">
+                <div className="flex-sub">
+                    <form onSubmit={handleSubmit}>
+                        <label>
+                            Ange projektnamn: <br />
+                            <input
+                                type="text"
+                                name="projectName"
+                                value={projectName}
+                                onChange={handleChange}
+                            />
+                        </label>
+                    </form>
+                </div>
+                <div className="flex-sub">
+                    <ProjectsList />
+                </div>
+            </div>
+            <div className="flex-parent">
+                <div className="flex-sub">
+                    <StartButton />
+                </div>
+                <div className="flex-sub">
+                    <StopButton />
+                </div>
+                <div className="flex-sub">
+                    <ClearButton />
+                </div>
+            </div>
+            <StartedMessage />
+            <StoppedMessage />
+            <TimeSpentMessage />
         </div>
     );
 };
